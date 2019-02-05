@@ -1,2 +1,2 @@
 # snake-javascript
-practicing java script by building a basic snake game
+A baisc JavaScript/HTML5/CSS website that will run the classic snake game
