@@ -1,13 +1,13 @@
 function play_game(){
-  var level = 160; // Game level, by decreasing will speed up
+  var level = 100; // Game level, by decreasing will speed up
   var rect_w = 45; // Width
   var rect_h = 30; // Height
   var inc_score = 50; // Score
-  var snake_color = "#006699"; // Snake Color
+  var snake_color = "#48C9B0"; // Snake Color
   var ctx; // Canvas attributes
   var tn = []; // temp directions storage
-  var x_dir = [-1, 0, 1, 0]; // position adjusments
-  var y_dir = [0, -1, 0, 1]; // position adjusments
+  var directionX = [-1, 0, 1, 0]; // position adjusments
+  var directionY = [0, -1, 0, 1]; // position adjusments
   var queue = [];
   var frog = 1; // defalut food
   var map = [];
@@ -26,8 +26,7 @@ function play_game(){
   for (i = 0; i < rect_w; i++){
     map[i] = [];
   }
-  // random placement of snake food
-  function rand_frog(){
+  function food_placement_random(){
     var x, y;
     do{
       x = MR() * rect_w|0;
@@ -37,9 +36,12 @@ function play_game(){
     ctx.fillStyle = snake_color;
     ctx.strokeRect(x * 10+1, y * 10+1, 8, 8);
   }
+  // random placement of snake food
+
+
   // Default somewhere placement
-  rand_frog();
-  function set_game_speed(){
+  food_placement_random();
+  function game_speed(){
     if (easy){
       X = (X+rect_w)%rect_w;
       Y = (Y+rect_h)%rect_h;
@@ -55,15 +57,15 @@ function play_game(){
       if (1 === map[X][Y]){
         score+= Math.max(5, inc_score);
         inc_score = 50;
-        rand_frog();
+        food_placement_random();
         frog++;
       }
       //ctx.fillStyle("#ffffff");
       ctx.fillRect(X * 10, Y * 10, 9, 9);
       map[X][Y] = 2;
       queue.unshift([X, Y]);
-      X+= x_dir[direction];
-      Y+= y_dir[direction];
+      X+= directionX[direction];
+      Y+= directionY[direction];
       if (frog < queue.length){
         dir = queue.pop()
         map[dir[0]][dir[1]] = 0;
@@ -72,12 +74,12 @@ function play_game(){
     }
     else if (!tn.length){
       var msg_score = document.getElementById("msg");
-      msg_score.innerHTML = "Thank you for playing game.<br /> Your Score : <b>"+score+"</b><br /><br /><input type='button' value='Play Again' onclick='window.location.reload();' />";
+      msg_score.innerHTML = "Score : <b>"+score+"</b><br /><br /><input type='button' value='Play Again' onclick='window.location.reload();' />";
       document.getElementById("playArea").style.display = 'none';
       window.clearInterval(interval);
     }
   }
-  interval = window.setInterval(set_game_speed, level);
+  interval = window.setInterval(game_speed, level);
   document.onkeydown = function(e) {
     var code = e.keyCode - 37;
     if (0 <= code && code < 4 && code !== tn[0]){
@@ -89,7 +91,7 @@ function play_game(){
         interval = 0;
       }
       else{
-        interval = window.setInterval(set_game_speed, 60);
+        interval = window.setInterval(game_speed, 60);
       }
     }
     else{
